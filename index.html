@@ -64,27 +64,29 @@
           </p>
         </section>
         <section>
-          Goal:
+          <h3>Goal</h3>
           Interop with RxJava, Vertx, Akka etc
         </section>
-          <section>
-            <code data-trim contenteditable class="scala">trait Publisher[T] {
+        <section>
+          <pre><code data-trim contenteditable>trait Publisher[T] {
   def subscribe(sub: Subscriber[T]): Unit
 }
+
 triat Subscription {
   def requestMore(n: Int): Unit
   def cancel(): Unit
 }
+
 trait Subscriber[T] {
   def onSubscribe(s: Subscription): Unit
   def onNext(elem: T): Unit
   def onError(thr: Throwable): Unit
   def onComplete(): Unit
-}
-</code>
+}</code></pre>
 
         </section>
         <section>
+          <h3>Examples</h3>
           <ul>
             <li>data transfer</li>
             <li>realtime data processing - stock market</li>
@@ -92,12 +94,18 @@ trait Subscriber[T] {
             <li>monitoring - analytics</li>
           </section>
           <section>
-            Why
+            <h3>Why is it hard?</h3>
           </section>
           <section>
-            Introducing 'Work Pulling Pattern'
-            http://www.michaelpollmeier.com/akka-work-pulling-pattern/
-            --white-board--
+            Concurrency<br/>
+            Actors<br/>
+            Backpressure<br/>
+            λ
+          </section>
+          <section>
+            <h2>Work Pulling Pattern</h2>
+            <a href="http://www.michaelpollmeier.com/akka-work-pulling-pattern/">http://www.michaelpollmeier.com/akka-work-pulling-pattern/</a><br/>
+            λ
           </section>
           <section>
             <ul>
@@ -107,40 +115,42 @@ trait Subscriber[T] {
             </ul>
           </section>
           <section>
-            batched for performance - CPU caching
+            Batching for performance - CPU caching
           </section>
           <section>
-            Divide and conquer
-            Map Reduce 
-            --white-board--
+            Divide and conquer<br/>
+            Map Reduce<br/>  
+            λ
           </section>
           <section>
-            <h3>Options:</h3>
+            <h2>Options</h2>
           </section>
           <section>
-            Java8 Streams:
-            eager evaluation - forEach
-            Static push or pull
-            Cannot reuse streams
+            <h3>Java8 Streams</h3>
+            <ul>
+              <li>Eager evaluation - forEach</li>
+              <li>Static push or pull</li>
+              <li>Cannot reuse streams</li>
+            </ul>
           </section>
           <section>
-            RxJava:
-            Backpressure by blocking
-            No backpressure for remote workers
-            Push only
+            <h3>RxJava</h3>
+            <ul>
+              <li>Backpressure by blocking</li>
+              <li>No backpressure for remote workers</li>
+              <li>Push only</li>
+            </ul>
           </section>
           <section>
-            Akka: 
-            Nice backpressure
-            Typed :)
-            Remoteable
+            <h3>Akka</h3> 
+            <ul>
+              <li>Nice backpressure</li>
+              <li>Typed :)</li>
+              <li>Remoteable</li>
+            </ul>
           </section>
           <section>
-            Demo
-          </section>
-
-          <section>
-            <h1>THE END</h1>
+            <h2>Demo</h2>
             <p>
               <a href="http://twitter.com/kalmanb">@kalmanb</a>
             </p>
