@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>reveal.js - The HTML Presentation Framework</title>
+    <title>Reactive Streams - @kalmanb</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -50,11 +50,69 @@
           </p>
         </section>
         <section>
+          <h3>Anatomy of an Actor (akka)</h3>
+          <ul>
+            <li>Internally single threaded - easy to reason</li>
+            <li>Actor systems - nice concurrency model</li>
+            <li>Resource allocation (threads) in config at runtime</li>
+            <li>Mailbox - be careful - unbounded - out of memory</li>
+          </ul><br/>
+        </section>
+        <section>
+          <h3>... but wait</h3>
+          What can we do about the mail box out of memory<br/>
+          How can we create back pressure<br/>
+        </section>
+        <section>
+          <h3>Why is it hard?</h3>
+          Non-blocking back pressure is hard. It gets even harder when considering remote workers
+        </section>
+        <section>
+          <h2>Options</h2>
+        </section>
+        <section>
+          <h3>Java8 Streams</h3>
+          <ul>
+            <li>Eager evaluation - forEach :(</li>
+            <li>Static push or pull :(</li>
+            <li>Cannot reuse streams :(</li>
+          </ul>
+        </section>
+        <section>
+          <h3>RxJava</h3>
+          <ul>
+            <li>Back pressure by blocking :(</li>
+            <li>No back pressure for remote workers :(</li>
+            <li>Push only :(</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Work Pulling Pattern</h2>
+          <a href="http://www.michaelpollmeier.com/akka-work-pulling-pattern/">http://www.michaelpollmeier.com/akka-work-pulling-pattern/</a><br/><br/>
+          At <a href="http://twitter.com/moviohq">@moviohq</a> <a href="http://twitter.com/pollmeier">@pollmeier</a> implemented the work pulling pattern with akka actors. This is our current production model
+        </section>
+        <section>
+          <h3>pull <-----> push</h3>
+          <ul>
+            <li>Push - to workers</li>
+            <li>Pull - from coordinator</li>
+            <li>Choose one or both?</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Work Pulling Pattern - both</h3>
+          <ul>
+            <li>Pull - when the coordinator has lots of work to do</li>
+            <li>Push - when the workers have more capacity than the coordinator</li>
+          </ul>
+        </section>
+        <section>
           <p>
             <a href="http://www.reactive-streams.org/">http://www.reactive-streams.org</a>
           </p>
           <p>
             <ul>
+              <li>Typesafe</li>
               <li>Netflix</li>
               <li>Oracle</li>
               <li>Pivotal</li>
@@ -64,10 +122,14 @@
           </p>
         </section>
         <section>
-          <h3>Goal</h3>
-          Interop with RxJava, Vertx, Akka etc
+          <h3>Reactive Streams Goal</h3>
+          <ul>
+            <li>A standard for asynchronous stream processing with non-blocking back pressure on the JVM</li>
+            <li>Cool = Interop with RxJava, Vertx, Akka etc</li>
+          </ul>
         </section>
         <section>
+          <h3>Simple Interface</h3>
           <pre><code data-trim contenteditable>trait Publisher[T] {
   def subscribe(sub: Subscriber[T]): Unit
 }
@@ -88,90 +150,56 @@ trait Subscriber[T] {
         <section>
           <h3>Examples</h3>
           <ul>
-            <li>data transfer</li>
-            <li>realtime data processing - stock market</li>
-            <li>batch processing - spark</li>
-            <li>monitoring - analytics</li>
-          </section>
-          <section>
-            <h3>Why is it hard?</h3>
-          </section>
-          <section>
-            Concurrency<br/>
-            Actors<br/>
-            Backpressure<br/>
-            λ
-          </section>
-          <section>
-            <h2>Work Pulling Pattern</h2>
-            <a href="http://www.michaelpollmeier.com/akka-work-pulling-pattern/">http://www.michaelpollmeier.com/akka-work-pulling-pattern/</a><br/>
-            λ
-          </section>
-          <section>
-            <ul>
-              <li>Push</li>
-              <li>Pull</li>
-              <li>Both</li>
-            </ul>
-          </section>
-          <section>
-            Batching for performance - CPU caching
-          </section>
-          <section>
-            Divide and conquer<br/>
-            Map Reduce<br/>  
-            λ
-          </section>
-          <section>
-            <h2>Options</h2>
-          </section>
-          <section>
-            <h3>Java8 Streams</h3>
-            <ul>
-              <li>Eager evaluation - forEach</li>
-              <li>Static push or pull</li>
-              <li>Cannot reuse streams</li>
-            </ul>
-          </section>
-          <section>
-            <h3>RxJava</h3>
-            <ul>
-              <li>Backpressure by blocking</li>
-              <li>No backpressure for remote workers</li>
-              <li>Push only</li>
-            </ul>
-          </section>
-          <section>
-            <h3>Akka</h3> 
-            <ul>
-              <li>Nice backpressure</li>
-              <li>Typed :)</li>
-              <li>Remoteable</li>
-            </ul>
-          </section>
-          <section>
-            <h2>Demo</h2>
-            <p>
-              <a href="http://twitter.com/kalmanb">@kalmanb</a>
-            </p>
-          </section>
-
-        </div>
+            <li>Data transfer</li>
+            <li>Real-time data processing - stock market</li>
+            <li>Batch processing - spark</li>
+            <li>Monitoring - analytics</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Akka Reactive Streams</h3> 
+          <ul>
+            <li>Implementation of the work pulling pattern</li>
+            <li>All the complexity is hidden</li>
+            <li>Non blocking back pressure :)</li>
+            <li>Dynamic pull / push :)</li>
+            <li>Statically Typed :)</li>
+            <li>Remotable back pressure :)</li>
+            <li>Reusable :)</li>
+          </ul>
+        </section>
+        <section>
+          Reactive Streams also added:<br/>
+          Batching for performance - CPU caching
+        </section>
+        <section>
+          <h2>Demo</h2>
+          <a href="https://github.com/kalmanb/reactive-streams-playground/tree/nz-meetup-july-2014">https://github.com/kalmanb/reactive-streams-playground/tree/nz-meetup-july-2014</a>
+          <p>
+            <br/>
+            <br/>
+            <a href="http://twitter.com/kalmanb">@kalmanb</a>
+          </p>
+        </section>
 
       </div>
 
-      <script src="lib/js/head.min.js"></script>
-      <script src="js/reveal.min.js"></script>
+    </div>
 
-      <script>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
 
-        // Full list of configuration options available here:
-        // https://github.com/hakimel/reveal.js#configuration
-      Reveal.initialize({
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
 controls: true,
 progress: true,
 history: true,
 center: true,
+
+maxScale: 3.0,
 
 theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
@@ -188,10 +216,10 @@ dependencies: [
 { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
 { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
 { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-      ]
-      });
+]
+});
 
-      </script>
+    </script>
 
-    </body>
-  </html>
+  </body>
+</html>
